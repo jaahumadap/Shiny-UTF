@@ -17,7 +17,7 @@ ui <- fluidPage(
     # Application title
     titlePanel("Testing display of spécial characters"),
 
-    # Sidebar with a slider input for number of bins
+    # Sidebar to select project
     sidebarLayout(
       sidebarPanel(
         selectInput("project", label = "Seleccioné un proyecto",
@@ -25,7 +25,7 @@ ui <- fluidPage(
                     )
       ),
     
-        # Show a plot of the generated distribution
+        # Show text output and a plot
         mainPanel(
           tags$h4(textOutput("projectName", inline = TRUE)),
           tags$h5(textOutput("organizations", inline = TRUE)),
@@ -34,21 +34,24 @@ ui <- fluidPage(
     )
 )
 
-# Define server logic required to draw a histogram
+# Define server logic
 server <- function(input, output) {
   
   data_reactive <- reactive({
     data %>% filter(project_name == input$project)
   })
   
+  # print project name
   output$projectName <- renderText ({
     paste0(input$project)
   })
   
+  # print organization
   output$organizations <- renderText ({
     paste0(data_reactive()$organization_name)
   })
   
+  # draw indicator table
   output$metrics <- renderPlot({
     makeInfoPanel(data_reactive())
   })
